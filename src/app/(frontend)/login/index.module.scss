@@ -1,0 +1,30 @@
+@import "../../../css/common.scss";
+
+.login {
+  margin-bottom: var(--block-padding);
+}
+
+.params {
+  margin-top: var(--base);
+}
+
+.formContainer {
+  max-width: 600px;
+  width: 100%;
+  padding: 50px;
+  border-radius: 10px;
+}
+
+/* @include mid-break {
+  backdrop-filter: blur(30px);
+  background-color: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 2px 0 rgb(0 0 / 0.005);
+} */
+
+/* @include small-break {
+  padding: 30px;
+} */
+
+.params {
+  margin-top: var(--base);
+}
