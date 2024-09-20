@@ -7,6 +7,8 @@ import React, { Fragment } from 'react'
 import type { Episode, Movie, Post, Series } from '@/payload-types'
 
 import { Media } from '@/components/Media'
+import { cmTimeAgo } from '@/utilities/time-ago'
+import { cmAbbreviateNumber } from '@/utilities/views'
 
 export const Card: React.FC<{
   alignItems?: 'center'
@@ -118,8 +120,8 @@ export const Card: React.FC<{
             </div>
           )}
           <div>
-            <span>{views} view . </span>
-            <span>{publishedAt}</span>
+            <span>{cmAbbreviateNumber(views)} View . </span>
+            <span>{cmTimeAgo(publishedAt)}</span>
           </div>
         </div>
       </article>
@@ -160,8 +162,8 @@ export const Card: React.FC<{
             </div>
           )}
           <div>
-            <span>{views} view . </span>
-            <span>{publishedAt}</span>
+            <span>{cmAbbreviateNumber(views)} View . </span>
+            <span>{cmTimeAgo(publishedAt)}</span>
           </div>
         </div>
       </article>

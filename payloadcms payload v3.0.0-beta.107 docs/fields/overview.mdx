@@ -1,0 +1,390 @@
+---
+title: Fields Overview
+label: Overview
+order: 10
+desc: Fields are the building blocks of Payload, find out how to add or remove a field, change field type, add hooks, define Access Control and Validation.
+keywords: overview, fields, config, configuration, documentation, Content Management System, cms, headless, javascript, node, react, nextjs
+---
+
+Fields are the building blocks of Payload. They define the schema of the Documents that will be stored in the [Database](../database/overview), as well as automatically generate the corresponding UI within the [Admin Panel](../admin/overview).
+
+There are many [Field Types](#field-types) to choose from, ranging anywhere from simple text strings to nested arrays and blocks. Most fields save data to the database, while others are strictly presentational. Fields can have [Custom Validations](#validation), [Conditional Logic](../admin/fields#conditional-logic), [Access Control](#field-level-access-control), [Hooks](#field-level-hooks), and so much more.
+
+To configure fields, use the `fields` property in your [Collection](../configuration/collections) or [Global](../configuration/globals) config:
+
+```ts
+import type { CollectionConfig } from 'payload'
+
+export const Page: CollectionConfig = {
+  // ...
+  fields: [ // highlight-line
+    // ...
+  ]
+}
+```
+
+<Banner type="success">
+  You can fully customize the appearance and behavior of all fields within the Admin Panel. [More details](../admin/fields).
+</Banner>
+
+## Field Types
+
+Payload provides a wide variety of built-in Field Types, each with its own unique properties and behaviors that determine which values it can accept, how it is presented in the API, and how it will be rendered in the [Admin Panel](../admin/overview).
+
+To configure fields, use the `fields` property in your [Collection](../configuration/collections) or [Global](../configuration/globals) config:
+
+```ts
+import type { CollectionConfig } from 'payload'
+
+export const Page: CollectionConfig = {
+  slug: 'pages',
+  // highlight-start
+  fields: [
+    {
+      name: 'field',
+      type: 'text',
+    }
+  ]
+  // highlight-end
+}
+```
+
+<Banner type="warning">
+  <strong>Reminder:</strong>
+  Each field is an object with at least the `type` property. This matches the field to its corresponding Field Type. [More details](#field-options).
+</Banner>
+
+There are two main categories of fields in Payload:
+
+- [Data Fields](#data-fields)
+- [Presentational Fields](#presentational-fields)
+
+To begin writing fields, first determine which [Field Type](#field-types) best supports your application. Then to author your field accordingly using the [Field Options](#field-options) for your chosen field type.
+
+### Data Fields
+
+Data Fields are used to store data in the [Database](../database/overview). All Data Fields have a `name` property. This is the key that will be used to store the field's value.
+
+Here are the available Data Fields:
+
+- [Array](./array) - for repeating content, supports nested fields
+- [Blocks](./blocks) - for block-based content, supports nested fields
+- [Checkbox](./checkbox) - saves boolean true / false values
+- [Code](./code) - renders a code editor interface that saves a string
+- [Date](./date) - renders a date picker and saves a timestamp
+- [Email](./email) - ensures the value is a properly formatted email address
+- [Group](./group) - nests fields within a keyed object
+- [JSON](./json) - renders a JSON editor interface that saves a JSON object
+- [Number](./number) - saves numeric values
+- [Point](./point) - for location data, saves geometric coordinates
+- [Radio](./radio) - renders a radio button group that allows only one value to be selected
+- [Relationship](./relationship) - assign relationships to other collections
+- [Rich Text](./rich-text) - renders a fully extensible rich text editor
+- [Select](./select) - renders a dropdown / picklist style value selector
+- [Tabs (Named)](./tabs) - similar to group, but renders nested fields within a tabbed layout
+- [Text](./text) - simple text input that saves a string
+- [Textarea](./textarea) - similar to text, but allows for multi-line input
+- [Upload](./upload) - allows local file and image upload
+
+### Presentational Fields
+
+Presentational Fields do not store data in the database. Instead, they are used to organize and present other fields in the [Admin Panel](../admin/overview), or to add custom UI components.
+
+Here are the available Presentational Fields:
+
+- [Collapsible](/docs/fields/collapsible) - nests fields within a collapsible component
+- [Row](/docs/fields/row) - aligns fields horizontally
+- [Tabs (Unnamed)](/docs/fields/tabs) - nests fields within a tabbed layout
+- [UI](/docs/fields/ui) - blank field for custom UI components
+
+<Banner type="warning">
+  <strong>Tip:</strong>
+  Don't see a Field Type that fits your needs? You can build your own using a [Custom Field Component](../admin/fields#the-field-component).
+</Banner>
+
+## Field Options
+
+All fields require at least the `type` property. This matches the field to its corresponding [Field Type](#field-types) to determine its appearance and behavior within the [Admin Panel](../admin/overview). Each Field Type has its own unique set of options based on its own type.
+
+To set a field's type, use the `type` property in your Field Config:
+
+```ts
+import type { Field } from 'payload'
+
+export const MyField: Field = {
+  type: 'text', // highlight-line
+  name: 'myField',
+}
+```
+
+<Banner type="warning">
+  For a full list of configuration options, see the documentation for each [Field Type](#field-types).
+</Banner>
+
+### Field Names
+
+All [Data Fields](#data-fields) require a `name` property. This is the key that will be used to store and retrieve the field's value in the database. This property must be unique within the Collection, Global, or nested group that it is defined in.
+
+To set a field's name, use the `name` property in your Field Config:
+
+```ts
+import type { Field } from 'payload'
+
+export const MyField: Field = {
+  type: 'text',
+  name: 'myField', // highlight-line
+}
+```
+
+Payload reserves various field names for internal use. Using reserved field names will result in your field being sanitized from the config.
+
+The following field names are forbidden and cannot be used:
+
+  - `__v`
+  - `salt`
+  - `hash`
+  - `file`
+
+### Field-level Hooks
+
+In addition to being able to define [Hooks](../hooks/overview) on a document-level, you can define extremely granular logic field-by-field.
+
+To define Field-level Hooks, use the `hooks` property in your Field Config:
+
+```ts
+import type { Field } from 'payload'
+
+export const MyField: Field = {
+  type: 'text',
+  name: 'myField',
+  // highlight-start
+  hooks: {
+    // ...
+  }
+  // highlight-end
+}
+```
+
+For full details on Field-level Hooks, see the [Field Hooks](../hooks/fields) documentation.
+
+### Field-level Access Control
+
+In addition to being able to define [Access Control](../access-control/overview) on a document-level, you can define extremely granular permissions field-by-field.
+
+To define Field-level Access Control, use the `access` property in your Field Config:
+
+```ts
+import type { Field } from 'payload'
+
+export const MyField: Field = {
+  type: 'text',
+  name: 'myField',
+  // highlight-start
+  access: {
+    // ...
+  }
+  // highlight-end
+}
+```
+
+For full details on Field-level Access Control, see the [Field Access Control](../access-control/fields) documentation.
+
+### Default Values
+
+Fields can be optionally prefilled with initial values. This is used in both the [Admin Panel](../admin/overview) as well as API requests to populate missing or undefined field values during the `create` or `update` operations.
+
+To set a field's default value, use the `defaultValue` property in your Field Config:
+
+```ts
+import type { Field } from 'payload'
+
+export const MyField: Field = {
+  type: 'text',
+  name: 'myField',
+  defaultValue: 'Hello, World!', // highlight-line
+}
+```
+
+Default values can be defined as a static value or a function that returns a value. When a `defaultValue` is defined statically, Payload's DB adapters will apply it to the database schema or models.
+
+Functions can be written to make use of the following argument properties:
+
+- `user` - the authenticated user object
+- `locale` - the currently selected locale string
+
+Here is an example of a `defaultValue` function:
+
+```ts
+import type { Field } from 'payload'
+
+const translation: {
+  en: 'Written by'
+  es: 'Escrito por'
+}
+
+export const myField: Field = {
+  name: 'attribution',
+  type: 'text',
+  // highlight-start
+  defaultValue: ({ user, locale }) =>
+    `${translation[locale]} ${user.name}`,
+  // highlight-end
+}
+```
+
+<Banner type="success">
+  <strong>Tip:</strong>
+  You can use async `defaultValue` functions to fill fields with data from API requests.
+</Banner>
+
+### Validation
+
+Fields are automatically validated based on their [Field Type](#field-types) and other [Field Options](#field-options) such as `required` or `min` and `max` value constraints. If needed, however, field validations can be customized or entirely replaced by providing your own custom validation functions.
+
+To set a custom field validation function, use the `validate` property in your Field Config:
+
+```ts
+import type { Field } from 'payload'
+
+export const MyField: Field = {
+  type: 'text',
+  name: 'myField',
+  validate: value => Boolean(value) || 'This field is required' // highlight-line
+}
+```
+
+Custom validation functions should return either `true` or a `string` representing the error message to display in API responses.
+
+The following arguments are provided to the `validate` function:
+
+| Argument | Description                                                                                   |
+| -------- | --------------------------------------------------------------------------------------------- |
+| `value`  | The value of the field being validated.                                                        |
+| `ctx`   | An object with additional data and context. [More details](#validation-context) |
+
+#### Validation Context
+
+The `ctx` argument contains full document data, sibling field data, the current operation, and other useful information such as currently authenticated in user:
+
+```ts
+import type { Field } from 'payload'
+
+export const MyField: Field = {
+  type: 'text',
+  name: 'myField',
+  // highlight-start
+  validate: (val, { user }) =>
+    Boolean(user) || 'You must be logged in to save this field',
+  // highlight-end
+}
+```
+
+The following additional properties are provided in the `ctx` object:
+
+| Property      | Description                                                                                                              |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| `data`        | An object containing the full collection or global document currently being edited.                                       |
+| `siblingData` | An object containing document data that is scoped to only fields within the same parent of this field.                    |
+| `operation`   | Will be `create` or `update` depending on the UI action or API call.                                                      |
+| `id`          | The `id` of the current document being edited. `id` is `undefined` during the `create` operation.                         |
+| `req`        | The current HTTP request object. Contains `payload`, `user`, etc. |
+
+#### Reusing Default Field Validations
+
+When using custom validation functions, Payload will use yours in place of the default. However, you might want to simply augment the default validation with your own custom logic.
+
+To reuse default field validations, call them from within your custom validation function:
+
+```ts
+import { text } from 'payload/shared'
+
+const field: Field = {
+  name: 'notBad',
+  type: 'text',
+  validate: (val, args) => {
+    if (val === 'bad') return 'This cannot be "bad"'
+    return text(val, args) // highlight-line
+  },
+}
+```
+
+#### Async Field Validations
+
+Custom validation functions can also be asynchronous depending on your needs. This makes it possible to make requests to external services or perform other miscellaneous asynchronous logic.
+
+To write asynchronous validation functions, use the `async` keyword to define your function:
+
+```ts
+import type { CollectionConfig } from 'payload'
+
+export const Orders: CollectionConfig = {
+  slug: 'orders',
+  fields: [
+    {
+      name: 'customerNumber',
+      type: 'text',
+      // highlight-start
+      validate: async (val, { operation }) => {
+        if (operation !== 'create') return true
+        const response = await fetch(`https://your-api.com/customers/${val}`)
+        if (response.ok) return true
+        return 'The customer number provided does not match any customers within our records.'
+      },
+      // highlight-end
+    },
+  ],
+}
+```
+
+### Admin Options
+
+In addition to each field's base configuration, you can use the `admin` key to specify traits and properties for fields that will only effect how they are _rendered_ within the [Admin Panel](../admin/overview), such as their appearance or behavior.
+
+```ts
+import type { Field } from 'payload'
+
+export const MyField: Field = {
+  type: 'text',
+  name: 'myField',
+  admin: { // highlight-line
+    // ...
+  }
+}
+```
+
+For full details on Admin Options, see the [Field Admin Options](../admin/fields) documentation.
+
+## Custom ID Fields
+
+All [Collections](../configuration/collections) automatically generate their own ID field. If needed, you can override this behavior by providing an explicit ID field to your config. This will force users to provide a their own ID value when creating a record.
+
+To define a custom ID field, add a new field with the `name` property set to `id`:
+
+```ts
+import type { CollectionConfig } from 'payload'
+
+export const MyCollection: CollectionConfig = {
+  // ...
+  fields: [
+    {
+      name: 'id', // highlight-line
+      type: 'number',
+    },
+  ],
+}
+```
+
+<Banner type="warning">
+  <strong>Reminder:</strong>
+  The Custom ID Fields can only be of type [`Number`](./number) or [`Text`](./text).
+
+  Custom ID fields with type `text` must not contain `/` or `.` characters.
+</Banner>
+
+## TypeScript
+
+You can import the Payload `Field` type as well as other common types from the `payload` package. [More details](../typescript/overview).
+
+```ts
+import type { Field } from 'payload'
+```

@@ -88,6 +88,7 @@ export const Movies: CollectionConfig = {
                             name: 'type',
                             type: 'text',
                             admin: {
+                                readOnly: true,
                                 position: 'sidebar',
                             },
                             defaultValue: 'movie',
@@ -142,6 +143,7 @@ export const Movies: CollectionConfig = {
                     pickerAppearance: 'dayAndTime',
                 },
                 position: 'sidebar',
+                readOnly: true,
             },
             hooks: {
                 beforeChange: [

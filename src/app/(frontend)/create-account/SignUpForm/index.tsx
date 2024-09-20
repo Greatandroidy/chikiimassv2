@@ -1,125 +1,137 @@
 'use client'
-
 import React, { useState } from 'react'
+import { useForm, FormProvider } from 'react-hook-form'
+import { Button } from '@/components/ui/button'
 import { useAuth } from '@/providers/Auth'
-import { useRouter } from 'next/navigation'
 
-const SignUpForm: React.FC = () => {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [passwordConfirm, setPasswordConfirm] = useState('')
-  const [error, setError] = useState('')
+type SignUpFormData = {
+  username: string
+  email: string
+  password: string
+  passwordConfirm: string
+}
+
+const SignUpPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | undefined>()
+  const [hasSubmitted, setHasSubmitted] = useState(false)
 
   const { create } = useAuth()
-  const router = useRouter()
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setError('')
+  const formMethods = useForm<SignUpFormData>({
+    defaultValues: {
+      username: '',
+      email: '',
+      password: '',
+      passwordConfirm: '',
+    },
+  })
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    watch,
+  } = formMethods
+
+  const password = watch('password')
+
+  const onSubmit = async (data: SignUpFormData) => {
     setIsLoading(true)
-
-    if (password !== passwordConfirm) {
-      setError('Passwords do not match')
-      setIsLoading(false)
-      return
-    }
+    setError(undefined)
 
     try {
-      await create({ email, password, passwordConfirm })
-      router.push('/dashboard') // Redirect to dashboard after successful sign-up
+      await create({
+        username: data.username,
+        email: data.email,
+        password: data.password,
+        passwordConfirm: data.passwordConfirm,
+      })
+      setHasSubmitted(true)
     } catch (err) {
-      setError('An error occurred during sign-up. Please try again.')
+      if (err instanceof Error) {
+        setError(err.message)
+      } else {
+        setError('An unexpected error occurred during sign up. Please try again.')
+      }
     } finally {
       setIsLoading(false)
     }
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Create your account
-          </h2>
-        </div>
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <input type="hidden" name="remember" value="true" />
-          <div className="rounded-md shadow-sm -space-y-px">
-            <div>
-              <label htmlFor="email-address" className="sr-only">
-                Email address
-              </label>
+    <div className="container lg:max-w-[48rem] pb-20">
+      <FormProvider {...formMethods}>
+        <h1 className="text-2xl font-bold mb-6">Sign Up</h1>
+        {!isLoading && hasSubmitted && (
+          <p className="text-green-600 mb-4">Sign up successful! Please check your email to verify your account.</p>
+        )}
+        {isLoading && <p>Loading, please wait...</p>}
+        {error && <div className="text-red-600 mb-4">{error}</div>}
+        {!hasSubmitted && (
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <div className="mb-4">
+              <label htmlFor="username" className="block mb-2">Username</label>
               <input
-                id="email-address"
-                name="email"
-                type="email"
-                autoComplete="email"
-                required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Email address"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                id="username"
+                {...register('username', { required: 'Username is required' })}
+                className="w-full p-2 border rounded text-black bg-white"
               />
+              {errors.username && <p className="text-red-600">{errors.username.message}</p>}
             </div>
-            <div>
-              <label htmlFor="password" className="sr-only">
-                Password
-              </label>
+            <div className="mb-4">
+              <label htmlFor="email" className="block mb-2">Email</label>
+              <input
+                id="email"
+                type="email"
+                {...register('email', { 
+                  required: 'Email is required',
+                  pattern: {
+                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                    message: "Invalid email address"
+                  }
+                })}
+                className="w-full p-2 border rounded text-black bg-white"
+              />
+              {errors.email && <p className="text-red-600">{errors.email.message}</p>}
+            </div>
+            <div className="mb-4">
+              <label htmlFor="password" className="block mb-2">Password</label>
               <input
                 id="password"
-                name="password"
                 type="password"
-                autoComplete="new-password"
-                required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                {...register('password', { 
+                  required: 'Password is required',
+                  minLength: {
+                    value: 8,
+                    message: 'Password must be at least 8 characters'
+                  }
+                })}
+                className="w-full p-2 border rounded text-black bg-white"
               />
+              {errors.password && <p className="text-red-600">{errors.password.message}</p>}
             </div>
-            <div>
-              <label htmlFor="password-confirm" className="sr-only">
-                Confirm Password
-              </label>
+            <div className="mb-4">
+              <label htmlFor="passwordConfirm" className="block mb-2">Confirm Password</label>
               <input
-                id="password-confirm"
-                name="password-confirm"
+                id="passwordConfirm"
                 type="password"
-                autoComplete="new-password"
-                required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Confirm Password"
-                value={passwordConfirm}
-                onChange={(e) => setPasswordConfirm(e.target.value)}
+                {...register('passwordConfirm', { 
+                  required: 'Please confirm your password',
+                  validate: value => value === password || "Passwords do not match"
+                })}
+                className="w-full p-2 border rounded text-black bg-white"
               />
+              {errors.passwordConfirm && <p className="text-red-600">{errors.passwordConfirm.message}</p>}
             </div>
-          </div>
-
-          {error && (
-            <div className="text-red-500 text-sm mt-2">
-              {error}
-            </div>
-          )}
-
-          <div>
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
-            >
-              {isLoading ? 'Signing up...' : 'Sign up'}
-            </button>
-          </div>
-        </form>
-        <div className="text-sm text-center">
-          <a href="/login" className="font-medium text-indigo-600 hover:text-indigo-500">
-            Already have an account? Log in
-          </a>
-        </div>
-      </div>
+            <Button type="submit" variant="default" disabled={isLoading}>
+              {isLoading ? 'Signing Up...' : 'Sign Up'}
+            </Button>
+          </form>
+        )}
+      </FormProvider>
     </div>
   )
 }
 
-export default SignUpForm
+export default SignUpPage

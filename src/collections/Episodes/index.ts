@@ -48,13 +48,6 @@ export const Episodes: CollectionConfig = {
             admin: {
                 position: 'sidebar',
             },
-            filterOptions: ({ id }) => {
-                return {
-                    id: {
-                        not_in: [id],
-                    },
-                }
-            },
             hasMany: true,
             relationTo: 'movies',
         },
@@ -80,6 +73,7 @@ export const Episodes: CollectionConfig = {
             name: 'type',
             type: 'text',
             admin: {
+                readOnly: true,
                 position: 'sidebar',
             },
             defaultValue: 'series',
@@ -100,7 +94,7 @@ export const Episodes: CollectionConfig = {
                     },
                 ],
             }, */
-            hooks: {
+/*             hooks: {
                 afterRead: [
                     async ({ siblingData, value }) => {
                         if (siblingData.series && !value) {
@@ -122,7 +116,7 @@ export const Episodes: CollectionConfig = {
                         return value;
                     },
                 ],
-            },
+            }, */
             
         },
         {
@@ -176,6 +170,7 @@ export const Episodes: CollectionConfig = {
                 date: {
                     pickerAppearance: 'dayAndTime',
                 },
+                readOnly: true,
                 position: 'sidebar',
             },
             hooks: {

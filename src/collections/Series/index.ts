@@ -61,13 +61,6 @@ export const Series: CollectionConfig = {
                             admin: {
                                 position: 'sidebar',
                             },
-                            filterOptions: ({ id }) => {
-                                return {
-                                    id: {
-                                        not_in: [id],
-                                    },
-                                }
-                            },
                             hasMany: true,
                             relationTo: 'movies',
                         },
@@ -96,7 +89,7 @@ export const Series: CollectionConfig = {
                     label: 'Seasons',
                     fields: [
                         {
-                            name: 'episodes',
+                            name: 'seasons',
                             type: 'blocks',
                             blocks: [SeasonsBlock]
                         },
@@ -139,6 +132,7 @@ export const Series: CollectionConfig = {
                     pickerAppearance: 'dayAndTime',
                 },
                 position: 'sidebar',
+                readOnly: true,
             },
             hooks: {
                 beforeChange: [

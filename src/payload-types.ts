@@ -405,7 +405,7 @@ export interface Series {
   relatedMovie?: (number | Movie)[] | null;
   relatedPosts?: (number | Post)[] | null;
   categories?: (number | Category)[] | null;
-  episodes?:
+  seasons?:
     | {
         SeasonTitle?: string | null;
         SeasonNumber?: number | null;

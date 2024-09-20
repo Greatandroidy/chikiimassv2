@@ -1,4 +1,4 @@
-export function cmAbbreviateNumber(value: number | undefined, digits = 0): string | undefined {
+export function cmAbbreviateNumber(value: number | null | undefined, digits = 0): string | undefined {
     if (value === undefined || value === null) {
         return;
     }

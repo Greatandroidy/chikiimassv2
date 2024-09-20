@@ -1,0 +1,106 @@
+---
+title: Collection Configs
+label: Collections
+order: 20
+desc: Structure your Collections for your needs by defining fields, adding slugs and labels, establishing access control, tying in hooks, setting timestamps and more.
+keywords: collections, config, configuration, documentation, Content Management System, cms, headless, javascript, node, react, nextjs
+---
+
+A Collection is a group of records, called Documents, that all share a common schema. You can define as many Collections as your application needs. Each Document in a Collection is stored in the [Database](../database/overview) based on the [Fields](../fields/overview) that you define, and automatically generates a [Local API](../local-api/overview), [REST API](../rest-api/overview), and [GraphQL API](../graphql/overview) used to manage your Documents.
+
+Collections are also used to achieve [Authentication](../authentication/overview) in Payload. By defining a Collection with `auth` options, that Collection receives additional operations to support user authentication.
+
+Collections are the primary way to structure recurring data in your application, such as users, products, pages, posts, and other types of content that you might want to manage. Each Collection can have its own unique [Access Control](../access-control/overview), [Hooks](../hooks/overview), [Admin Options](#admin-options), and more.
+
+To define a Collection Config, use the `collection` property in your [Payload Config](./overview):
+
+```ts
+import { buildConfig } from 'payload'
+
+export default buildConfig({
+  // ...
+  collections: [ // highlight-line
+    // Your Collections go here
+  ],
+})
+```
+
+<Banner type="success">
+  <strong>Tip:</strong>
+  If your Collection is only ever meant to contain a single Document, consider using a [Global](./globals) instead.
+</Banner>
+
+## Config Options
+
+It's often best practice to write your Collections in separate files and then import them into the main [Payload Config](../overview).
+
+Here is what a simple Collection Config might look like:
+
+```ts
+import { CollectionConfig } from 'payload'
+
+export const Posts: CollectionConfig = {
+  slug: 'posts',
+  fields: [
+    {
+      name: 'title',
+      type: 'text',
+    }
+  ]
+}
+```
+
+<Banner type="success">
+  <strong>Reminder:</strong>
+  For a more complex example, see the [Public Demo](https://github.com/payloadcms/public-demo) source code on GitHub, or the [Templates](https://github.com/payloadcms/payload/tree/main/templates) and [Examples](https://github.com/payloadcms/payload/tree/main/examples) directories in the Payload repository.
+</Banner>
+
+The following options are available:
+
+| Option                 | Description                                                                                                                                                                                                              |
+|------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **`admin`**            | The configuration options for the Admin Panel. [More details](../admin/collections).                                                                                                                                            |
+| **`access`**           | Provide Access Control functions to define exactly who should be able to do what with Documents in this Collection. [More details](../access-control/collections).                                                   |
+| **`auth`**             | Specify options if you would like this Collection to feature authentication. [More details](../authentication/overview).                                                          |
+| **`custom`**           | Extension point for adding custom data (e.g. for plugins)                                                                          |
+| **`disableDuplicate`** | When true, do not show the "Duplicate" button while editing documents within this Collection and prevent `duplicate` from all APIs.                                                                                      |
+| **`defaultSort`**      | Pass a top-level field to sort by default in the Collection List View. Prefix the name of the field with a minus symbol ("-") to sort in descending order.                                                               |
+| **`dbName`**      | Custom table or Collection name depending on the Database Adapter. Auto-generated from slug if not defined. |
+| **`endpoints`**        | Add custom routes to the REST API. Set to `false` to disable routes. [More details](../rest-api/overview#custom-endpoints).                                                                                                    |
+| **`fields`** \*        | Array of field types that will determine the structure and functionality of the data stored within this Collection. [More details](../fields/overview). |
+| **`graphQL`**          | An object with `singularName` and `pluralName` strings used in schema generation. Auto-generated from slug if not defined. Set to `false` to disable GraphQL.                                                            |
+| **`hooks`**            | Entry point for Hooks. [More details](../hooks/overview#collection-hooks).                                                                                                         |
+| **`labels`**           | Singular and plural labels for use in identifying this Collection throughout Payload. Auto-generated from slug if not defined.                                                                                           |
+| **`slug`** \*          | Unique, URL-friendly string that will act as an identifier for this Collection.                                                                                                                                          |
+| **`timestamps`**       | Set to false to disable documents' automatically generated `createdAt` and `updatedAt` timestamps.                                                                                                                       |
+| **`typescript`**       | An object with property `interface` as the text used in schema generation. Auto-generated from slug if not defined.                                                                                                                                                                                  |
+| **`upload`**           | Specify options if you would like this Collection to support file uploads. For more, consult the [Uploads](../upload/overview) documentation.                                                                         |
+| **`versions`**         | Set to true to enable default options, or configure with object properties. [More details](../versions/overview#collection-config).                                                                                            |
+
+_\* An asterisk denotes that a property is required._
+
+### Fields
+
+Fields define the schema of the Documents within a Collection. To learn more, go to the [Fields](../fields/overview) documentation.
+
+### Access Control
+
+[Collection Access Control](../access-control/overview) determines what a user can and cannot do with any given Document within a Collection. To learn more, go to the [Access Control](../access-control/overview) documentation.
+
+### Hooks
+
+[Collection Hooks](../hooks/collections) allow you to tie into the lifecycle of your Documents so you can execute your own logic during specific events. To learn more, go to the [Hooks](../hooks/overview) documentation.
+
+### Admin Options
+
+You can customize the way that the [Admin Panel](../admin/overview) behaves on a Collection-by-Collection basis. To learn more, go to the [Collection Admin Options](../admin/collections) documentation.
+
+## TypeScript
+
+You can import types from Payload to help make writing your Collection configs easier and type-safe. There are two main types that represent the Collection Config, `CollectionConfig` and `SanitizeCollectionConfig`.
+
+The `CollectionConfig` type represents a raw Collection Config in its full form, where only the bare minimum properties are marked as required. The `SanitizedCollectionConfig` type represents a Collection Config after it has been fully sanitized. Generally, this is only used internally by Payload.
+
+```ts
+import type { CollectionConfig, SanitizedCollectionConfig } from 'payload'
+```

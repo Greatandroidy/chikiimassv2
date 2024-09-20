@@ -159,9 +159,9 @@ export const ArchiveBlock: React.FC<
         </div>
       )}
       {relationTo === 'posts' && <CollectionArchive posts={posts} /> }
-       {relationTo === 'Series' && <CollectionArchive series={series} />}
+       {relationTo === 'series' && <CollectionArchive series={series} />}
        {relationTo === 'episodes' && <CollectionArchive episodes={episodes} />}
-       {relationTo === 'Movies' && <CollectionArchive movies={movies} />}
+       {relationTo === 'movies' && <CollectionArchive movies={movies} />}
     </div>
   )
 }
