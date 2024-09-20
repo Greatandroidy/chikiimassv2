@@ -1,4 +1,4 @@
-'use client'
+/* 'use client'
 
 import React, { Fragment, useCallback, useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -155,6 +155,190 @@ const AccountForm: React.FC = () => {
         appearance="primary"
         className={classes.submit}
       />
+    </form>
+  )
+}
+
+export default AccountForm
+ */
+
+'use client'
+
+import React, { useCallback, useEffect, useRef, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { useRouter } from 'next/navigation'
+import { useAuth } from '@/providers/Auth'
+
+type FormData = {
+  email: string
+  name: string
+  password: string
+  passwordConfirm: string
+}
+
+const AccountForm: React.FC = () => {
+  const [error, setError] = useState('')
+  const [success, setSuccess] = useState('')
+  const { user, setUser } = useAuth()
+  const [changePassword, setChangePassword] = useState(false)
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isLoading },
+    reset,
+    watch,
+  } = useForm<FormData>()
+
+  const password = useRef({})
+  password.current = watch('password', '')
+
+  const router = useRouter()
+
+  const onSubmit = useCallback(
+    async (data: FormData) => {
+      if (user) {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/${user.id}`, {
+          credentials: 'include',
+          method: 'PATCH',
+          body: JSON.stringify(data),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+
+        if (response.ok) {
+          const json = await response.json()
+          setUser(json.doc)
+          setSuccess('Successfully updated account.')
+          setError('')
+          setChangePassword(false)
+          reset({
+            email: json.doc.email,
+            name: json.doc.name,
+            password: '',
+            passwordConfirm: '',
+          })
+        } else {
+          setError('There was a problem updating your account.')
+        }
+      }
+    },
+    [user, setUser, reset],
+  )
+
+  useEffect(() => {
+    if (user === null) {
+      router.push(
+        `/login?error=${encodeURIComponent(
+          'You must be logged in to view this page.',
+        )}&redirect=${encodeURIComponent('/account')}`,
+      )
+    }
+
+    if (user) {
+      reset({
+        email: user.email,
+        name: user.name,
+        password: '',
+        passwordConfirm: '',
+      })
+    }
+  }, [user, router, reset, changePassword])
+
+  return (
+    <form onSubmit={handleSubmit(onSubmit)} className="max-w-md mx-auto mt-8">
+      {(error || success) && (
+        <div className={`p-4 mb-4 rounded-md ${error ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}`}>
+          {error || success}
+        </div>
+      )}
+      {!changePassword ? (
+        <>
+          <p className="mb-4">
+            Change your account details below, or{' '}
+            <button
+              type="button"
+              className="text-blue-600 hover:underline"
+              onClick={() => setChangePassword(!changePassword)}
+            >
+              click here
+            </button>
+            {' to change your password.'}
+          </p>
+          <div className="mb-4">
+            <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-700">
+              Email Address
+            </label>
+            <input
+              type="email"
+              id="email"
+              {...register('email', { required: true })}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            {errors.email && <p className="mt-1 text-sm text-red-600">This field is required</p>}
+          </div>
+          <div className="mb-4">
+            <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-700">
+              Name
+            </label>
+            <input
+              type="text"
+              id="name"
+              {...register('name')}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+        </>
+      ) : (
+        <>
+          <p className="mb-4">
+            Change your password below, or{' '}
+            <button
+              type="button"
+              className="text-blue-600 hover:underline"
+              onClick={() => setChangePassword(!changePassword)}
+            >
+              cancel
+            </button>
+            .
+          </p>
+          <div className="mb-4">
+            <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-700">
+              Password
+            </label>
+            <input
+              type="password"
+              id="password"
+              {...register('password', { required: true })}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            {errors.password && <p className="mt-1 text-sm text-red-600">This field is required</p>}
+          </div>
+          <div className="mb-4">
+            <label htmlFor="passwordConfirm" className="block mb-2 text-sm font-medium text-gray-700">
+              Confirm Password
+            </label>
+            <input
+              type="password"
+              id="passwordConfirm"
+              {...register('passwordConfirm', {
+                required: true,
+                validate: value => value === password.current || 'The passwords do not match'
+              })}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            {errors.passwordConfirm && <p className="mt-1 text-sm text-red-600">{errors.passwordConfirm.message}</p>}
+          </div>
+        </>
+      )}
+      <button
+        type="submit"
+        disabled={isLoading}
+        className="w-full px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
+      >
+        {isLoading ? 'Processing' : changePassword ? 'Change Password' : 'Update Account'}
+      </button>
     </form>
   )
 }

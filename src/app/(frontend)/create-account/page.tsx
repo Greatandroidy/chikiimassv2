@@ -1,9 +1,7 @@
-import React from 'react'
+import SignUpForm from './SignUpForm'
 
-const CreateAccount = () => {
-  return (
-    <div>CreateAccount</div>
-  )
+const SignUpPage: React.FC = () => {
+  return <SignUpForm />
 }
 
-export default CreateAccount
+export default SignUpPage
