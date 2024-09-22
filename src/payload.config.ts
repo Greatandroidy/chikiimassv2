@@ -124,8 +124,8 @@ export default buildConfig({
     },
   }),
   collections: [Pages, Posts, Media, Categories, Users, Movies, Series, Episodes],
-  cors: [process.env.PAYLOAD_PUBLIC_SERVER_URL || ''].filter(Boolean),
-  csrf: [process.env.PAYLOAD_PUBLIC_SERVER_URL || ''].filter(Boolean),
+  cors: [process.env.PAYLOAD_PUBLIC_SERVER_URL, 'https://shiny-goggles-6jjv97576r6fg5g-3000.app.github.dev' || ''].filter(Boolean),
+  csrf: [process.env.PAYLOAD_PUBLIC_SERVER_URL,'https://shiny-goggles-6jjv97576r6fg5g-3000.app.github.dev' || ''].filter(Boolean),
   endpoints: [
     // The seed endpoint is used to populate the database with some example data
     // You should delete this endpoint before deploying your site to production

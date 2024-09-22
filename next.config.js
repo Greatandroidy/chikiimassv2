@@ -40,6 +40,12 @@ const nextConfig = {
           protocol: url.protocol.replace(':', ''),
         }
       }),
+      {
+        protocol: 'https',
+        hostname: 'shiny-goggles-6jjv97576r6fg5g-3000.app.github.dev',
+        port: '',
+        pathname: '/**',
+      },
     ],
   },
   reactStrictMode: true,
