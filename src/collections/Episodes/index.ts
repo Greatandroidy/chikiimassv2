@@ -5,6 +5,7 @@ import { MetaDescriptionField, MetaImageField, MetaTitleField, OverviewField, Pr
 import payload, { CollectionConfig } from "payload";
 import { revalidateEpisode } from "./hooks/revalidateEpisode";
 import { slugField } from "@/fields/slug";
+import VideoBlock from "@/blocks/VideoBlock";
 
 export const Episodes: CollectionConfig = {
     slug: 'episodes',
@@ -36,6 +37,37 @@ export const Episodes: CollectionConfig = {
         {
             name: 'descr',
             type: 'textarea'
+        },
+        {
+            name: 'duration',
+            type: 'text',
+            admin: {
+                position: 'sidebar',
+            }
+        },
+        {
+            name: 'country',
+            type: 'textarea',
+            admin: {
+                position: 'sidebar'
+            }
+        },
+        {
+            name: 'language',
+            type: 'text',
+            admin: {
+                position: 'sidebar'
+            }
+        },
+        {
+            name: 'url',
+            type: 'blocks',
+            blocks: [VideoBlock],
+        },
+        {
+            name: 'Actors',
+            type: 'relationship',
+            relationTo: 'casts',
         },
         {
             name: 'series',
@@ -77,6 +109,15 @@ export const Episodes: CollectionConfig = {
                 position: 'sidebar',
             },
             defaultValue: 'series',
+        },
+        {
+            name: 'Genres',
+            type: 'relationship',
+            relationTo: 'genres',
+            hasMany: true,
+            admin: {
+                position: 'sidebar',
+            }
         },
         {
             name: 'otherEpisodes',

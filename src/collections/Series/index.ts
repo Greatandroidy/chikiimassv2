@@ -82,6 +82,15 @@ export const Series: CollectionConfig = {
                             hasMany: true,
                             relationTo: 'categories',
                         },
+                        {
+                            name: 'Genres',
+                            type: 'relationship',
+                            relationTo: 'genres',
+                            hasMany: true,
+                            admin: {
+                                position: 'sidebar',
+                            }
+                        },
                     ],
                     label: 'Details'
                 },

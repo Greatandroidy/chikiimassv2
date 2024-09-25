@@ -35,6 +35,8 @@ import { Movies } from './collections/Movies'
 import { Series } from './collections/Series'
 import { Episodes } from './collections/Episodes'
 import { Settings } from './globals'
+import { Casts } from './collections/Casts'
+import { Genres } from './collections/Genres'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -123,9 +125,9 @@ export default buildConfig({
       url: process.env.DATABASE_URI || '',
     },
   }),
-  collections: [Pages, Posts, Media, Categories, Users, Movies, Series, Episodes],
-  cors: [process.env.PAYLOAD_PUBLIC_SERVER_URL, 'https://shiny-goggles-6jjv97576r6fg5g-3000.app.github.dev' || ''].filter(Boolean),
-  csrf: [process.env.PAYLOAD_PUBLIC_SERVER_URL,'https://shiny-goggles-6jjv97576r6fg5g-3000.app.github.dev' || ''].filter(Boolean),
+  collections: [Pages, Posts, Media, Categories, Genres, Users, Movies, Series, Episodes, Casts],
+  cors: [process.env.PAYLOAD_PUBLIC_SERVER_URL || ''].filter(Boolean),
+  csrf: [process.env.PAYLOAD_PUBLIC_SERVER_URL || ''].filter(Boolean),
   endpoints: [
     // The seed endpoint is used to populate the database with some example data
     // You should delete this endpoint before deploying your site to production

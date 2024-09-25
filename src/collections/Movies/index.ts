@@ -5,6 +5,7 @@ import { CollectionConfig } from "payload";
 import { revalidateMovie } from "./hooks/revalidateMovie";
 import { slugField } from "@/fields/slug";
 import { MetaDescriptionField, MetaImageField, MetaTitleField, OverviewField, PreviewField } from "@payloadcms/plugin-seo/fields";
+import VideoBlock from "@/blocks/VideoBlock";
 
 export const Movies: CollectionConfig = {
     slug: 'movies',
@@ -32,6 +33,37 @@ export const Movies: CollectionConfig = {
         {
             name: 'title',
             type: 'text',
+        },
+        {
+            name: 'duration',
+            type: 'text',
+            admin: {
+                position: 'sidebar',
+            }
+        },
+        {
+            name: 'country',
+            type: 'textarea',
+            admin: {
+                position: 'sidebar'
+            }
+        },
+        {
+            name: 'language',
+            type: 'text',
+            admin: {
+                position: 'sidebar'
+            }
+        },
+        {
+            name: 'url',
+            type: 'blocks',
+            blocks: [VideoBlock],
+        },
+        {
+            name: 'Actors',
+            type: 'relationship',
+            relationTo: 'casts',
         },
         {
             name: 'views',
@@ -102,6 +134,15 @@ export const Movies: CollectionConfig = {
                             },
                             hasMany: true,
                             relationTo: 'categories',
+                        },
+                        {
+                            name: 'Genres',
+                            type: 'relationship',
+                            relationTo: 'genres',
+                            hasMany: true,
+                            admin: {
+                                position: 'sidebar',
+                            }
                         },
                     ],
                     label: 'Details'

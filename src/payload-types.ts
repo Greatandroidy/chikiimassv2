@@ -15,10 +15,12 @@ export interface Config {
     posts: Post;
     media: Media;
     categories: Category;
+    genres: Genre;
     users: User;
     movies: Movie;
     series: Series;
     episodes: Episode;
+    casts: Cast;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -376,12 +378,49 @@ export interface User {
 export interface Movie {
   id: number;
   title?: string | null;
+  duration?: string | null;
+  country?: string | null;
+  language?: string | null;
+  url?:
+    | {
+        videos?:
+          | {
+              platform?: ('youtube' | 'dailymotion' | 'vimeo' | 'twitch' | 'facebook' | 'custom') | null;
+              embedType?: ('iframe' | 'direct') | null;
+              videoQuality?:
+                | ('144p' | '280p' | '360p' | '480p' | '720p' | '1080p' | '1440p' | '4k' | '8k' | 'auto')
+                | null;
+              videoLink?: string | null;
+              subtitles?:
+                | {
+                    language?: string | null;
+                    url?: string | null;
+                    id?: string | null;
+                  }[]
+                | null;
+              captions?:
+                | {
+                    language?: string | null;
+                    url?: string | null;
+                    id?: string | null;
+                  }[]
+                | null;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'video-block';
+      }[]
+    | null;
+  Actors?: (number | null) | Cast;
   views?: number | null;
   relatedMovies?: (number | Movie)[] | null;
   relatedPosts?: (number | Post)[] | null;
   relatedSeries?: (number | Series)[] | null;
   type?: string | null;
   categories?: (number | Category)[] | null;
+  Genres?: (number | Genre)[] | null;
   meta?: {
     title?: string | null;
     image?: (number | null) | Media;
@@ -396,6 +435,46 @@ export interface Movie {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "casts".
+ */
+export interface Cast {
+  id: number;
+  name: string;
+  bio?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  photo?: (number | null) | Media;
+  roleInMovies?:
+    | {
+        movie: number | Movie;
+        role: string;
+        id?: string | null;
+      }[]
+    | null;
+  roleInSeries?:
+    | {
+        series: number | Series;
+        role: string;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "series".
  */
 export interface Series {
@@ -405,6 +484,7 @@ export interface Series {
   relatedMovie?: (number | Movie)[] | null;
   relatedPosts?: (number | Post)[] | null;
   categories?: (number | Category)[] | null;
+  Genres?: (number | Genre)[] | null;
   seasons?:
     | {
         SeasonTitle?: string | null;
@@ -430,17 +510,80 @@ export interface Series {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "genres".
+ */
+export interface Genre {
+  id: number;
+  name: string;
+  options?:
+    | (
+        | 'action'
+        | 'adventure'
+        | 'comedy'
+        | 'drama'
+        | 'fantasy'
+        | 'historical'
+        | 'horror'
+        | 'mystery'
+        | 'romance'
+        | 'science-fiction'
+        | 'thriller'
+        | 'western'
+      )
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "episodes".
  */
 export interface Episode {
   id: number;
   title?: string | null;
   descr?: string | null;
+  duration?: string | null;
+  country?: string | null;
+  language?: string | null;
+  url?:
+    | {
+        videos?:
+          | {
+              platform?: ('youtube' | 'dailymotion' | 'vimeo' | 'twitch' | 'facebook' | 'custom') | null;
+              embedType?: ('iframe' | 'direct') | null;
+              videoQuality?:
+                | ('144p' | '280p' | '360p' | '480p' | '720p' | '1080p' | '1440p' | '4k' | '8k' | 'auto')
+                | null;
+              videoLink?: string | null;
+              subtitles?:
+                | {
+                    language?: string | null;
+                    url?: string | null;
+                    id?: string | null;
+                  }[]
+                | null;
+              captions?:
+                | {
+                    language?: string | null;
+                    url?: string | null;
+                    id?: string | null;
+                  }[]
+                | null;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'video-block';
+      }[]
+    | null;
+  Actors?: (number | null) | Cast;
   series?: (number | null) | Series;
   relatedMovies?: (number | Movie)[] | null;
   relatedPosts?: (number | Post)[] | null;
   relatedSeries?: (number | Series)[] | null;
   type?: string | null;
+  Genres?: (number | Genre)[] | null;
   otherEpisodes?: number | null;
   meta?: {
     title?: string | null;
