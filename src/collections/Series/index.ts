@@ -35,6 +35,10 @@ export const Series: CollectionConfig = {
             type: 'text',
         },
         {
+            name: 'description',
+            type: 'richText',
+        },
+        {
             type: 'tabs',
             tabs: [
                 {

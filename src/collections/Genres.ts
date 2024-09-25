@@ -2,23 +2,20 @@ import { CollectionConfig } from "payload";
 
 export const Genres: CollectionConfig = {
     slug: 'genres',
+    admin: {
+        useAsTitle: 'options',
+    },
     labels: {
         singular: 'Genre',
         plural: 'Genres',
     },
     access: {
-        read: () => true,   // Allow read access to everyone
-        create: () => true, // Allow creation of genres
-        update: () => true, // Allow updates to genres
-        delete: () => true, // Allow deletion of genres
+        read: () => true,
+        create: () => true,
+        update: () => true,
+        delete: () => true,
     },
     fields: [
-        {
-            name: 'name',
-            type: 'text',
-            required: true,
-            label: 'Name',
-        },
         {
             name: 'options',
             type: 'select',
@@ -40,6 +37,7 @@ export const Genres: CollectionConfig = {
             admin: {
                 description: 'Select the genre from the predefined options.',
             },
+            hasMany: true,
         },
     ],
 };

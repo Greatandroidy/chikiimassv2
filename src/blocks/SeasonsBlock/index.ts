@@ -23,7 +23,8 @@ export const SeasonsBlock: Block = {
         {
             name: 'Episodes',
             type: 'relationship',
-            relationTo: 'episodes'
+            relationTo: 'episodes',
+            hasMany: true
         },
     ]
 }

@@ -480,6 +480,21 @@ export interface Cast {
 export interface Series {
   id: number;
   title?: string | null;
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
   relatedSeries?: (number | Series)[] | null;
   relatedMovie?: (number | Movie)[] | null;
   relatedPosts?: (number | Post)[] | null;
@@ -490,7 +505,7 @@ export interface Series {
         SeasonTitle?: string | null;
         SeasonNumber?: number | null;
         SeasonDescr?: string | null;
-        Episodes?: (number | null) | Episode;
+        Episodes?: (number | Episode)[] | null;
         id?: string | null;
         blockName?: string | null;
         blockType: 'seasonsblock';
@@ -514,7 +529,6 @@ export interface Series {
  */
 export interface Genre {
   id: number;
-  name: string;
   options?:
     | (
         | 'action'
@@ -529,7 +543,7 @@ export interface Genre {
         | 'science-fiction'
         | 'thriller'
         | 'western'
-      )
+      )[]
     | null;
   updatedAt: string;
   createdAt: string;
